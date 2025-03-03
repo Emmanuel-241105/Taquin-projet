@@ -1,5 +1,5 @@
 from tkinter import*
-from test import creation , move_possible 
+from graphisme import creation , move_possible 
 
 HEIGHT = 480
 WIDTH = 480
