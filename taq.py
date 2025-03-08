@@ -1,6 +1,6 @@
 from tkinter import *
 
-from graphisme import creation , move_possible 
+from graphisme import creation , move_possible,l_move
 
 HEIGHT = 480
 WIDTH = 480
@@ -9,28 +9,29 @@ hauteur_case = HEIGHT // 4
 tags=None
 e=0
 play=0
+s=0
 l=creation()
 def affichage():
-        global play,l
-        if play==0:
+        global play,l,s
+        if play==0 or s==1:
                 play+=1
-                e=0
                 for i in range(4):
                         for j in range(4):
-                                e+=1
-                                if e!=16:
+                                if l[i][j]!=0:
                                         a=canvas.coords("a"+str(l[i][j]))
                                         canvas.move("a"+str(l[i][j]),j*largeur_case - a[0], i*hauteur_case - a[1])
+                s=0
         else:
                return
 def move_check(event):
-    global tags
+    global tags,s,l
     item = canvas.find_closest(event.x, event.y)[0]  # Trouve l'objet le plus proche
     tag = canvas.gettags(item)# Récupère ses tags
     tags=int(tag[0][1:])
-    e=move_possible(tags)
-    print(f"Tags :{tag[0][1:]}",type(tag[0][1:]))
-    print(e)
+    s=move_possible(tags)[0]
+    l=l_move(l,tags)
+    affichage()
+
 
 def show_coords(event):
     label.config(text=f"X: {event.x}, Y: {event.y}")
