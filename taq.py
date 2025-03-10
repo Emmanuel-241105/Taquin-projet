@@ -37,7 +37,7 @@ def show_coords(event):
     label.config(text=f"X: {event.x}, Y: {event.y}")
 fenetre = Tk() # Création de la fenêtre racine
 fenetre.title("TAQUIN")
-canvas = Canvas(fenetre, bg="white", height=HEIGHT, width=WIDTH)
+canvas = Canvas(fenetre, bg="purple", height=HEIGHT, width=WIDTH)
 canvas.pack(side="top")
 for i in range(4):
     for j in range(4):
