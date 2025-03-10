@@ -59,7 +59,12 @@ def l_move(l,n):
                 l[a[0]][a[1]],l[a[0]-1][a[1]]=l[a[0]-1][a[1]],l[a[0]][a[1]]
                 a=cherche(0,l)
             return l
+def affichage_gagner(l):
+    L= [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
+    if l==L:
+        print("gagnant!")
+    else: 
+        print("0")
+
 print(creation())
-"""n=int(input("vas y"))
-print (move_possible(n))
-print(l_move(l,n))"""
+affichage_gagner(l)

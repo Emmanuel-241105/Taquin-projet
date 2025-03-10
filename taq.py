@@ -1,6 +1,6 @@
 from tkinter import *
 
-from graphisme import creation , move_possible,l_move
+from graphisme import creation , move_possible,l_move, affichage_gagner
 
 HEIGHT = 480
 WIDTH = 480
@@ -54,6 +54,8 @@ label.pack(pady=20)
 fenetre.bind("<Motion>", show_coords)  # Détecter le mouvement de la souris
 print(l)
 canvas.bind("<Button-1>", move_check)
+affichage_gagner(l)
+
 
 
 fenetre.mainloop() # Lancement de la boucle principale
