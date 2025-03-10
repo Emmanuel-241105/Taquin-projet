@@ -36,6 +36,7 @@ def move_check(event):
 def show_coords(event):
     label.config(text=f"X: {event.x}, Y: {event.y}")
 fenetre = Tk() # Création de la fenêtre racine
+fenetre.title("TAQUIN")
 canvas = Canvas(fenetre, bg="white", height=HEIGHT, width=WIDTH)
 canvas.pack(side="top")
 for i in range(4):
@@ -45,9 +46,9 @@ for i in range(4):
                 ((j+1)*largeur_case, (i+1)*hauteur_case), fill="grey",tags="a"+str(e))
         canvas.create_text(((j*largeur_case)+60, (i*hauteur_case)+60),text=str(e),font=("Arial", 60, "bold"),fill="black",tags="a"+str(e))
 canvas.delete("a16")
-b1=Button(fenetre,text="play" ,font=("arial",10),command=affichage).pack(side="bottom",pady=20)
-b2=Button(fenetre,text="aide" ,font=("arial",10)).pack(side="left")
-b3=Button(fenetre,text="quitter" ,command= fenetre.destroy ,font=("arial",10)).pack(side="right")
+b1=Button(fenetre,text="Play" ,font=("arial",20),command=affichage).pack(side="bottom",pady=20)
+b2=Button(fenetre,text="Help" ,font=("arial",20)).pack(side="left")
+b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("arial",20)).pack(side="right")
 label = Label(fenetre, text="Déplacez la souris", font=("Arial", 14))
 label.pack(pady=20)
 
