@@ -32,6 +32,9 @@ def move_check(event):
     l=l_move(l,tags)
     affichage()
 
+def setting():
+      parametrefenetre = Tk()
+      parametrefenetre.title("SETTING")
 
 def show_coords(event):
     label.config(text=f"X: {event.x}, Y: {event.y}")
@@ -46,11 +49,33 @@ for i in range(4):
                 ((j+1)*largeur_case, (i+1)*hauteur_case), fill="grey",tags="a"+str(e))
         canvas.create_text(((j*largeur_case)+60, (i*hauteur_case)+60),text=str(e),font=("Arial", 60, "bold"),fill="black",tags="a"+str(e))
 canvas.delete("a16")
-b1=Button(fenetre,text="Play" ,font=("arial",20),command=affichage).pack(side="bottom",pady=20)
+
+b1=Button(fenetre,text="Play" ,font=("arial",20),command=affichage).pack(side="left",pady=40, padx=20)
 b2=Button(fenetre,text="Help" ,font=("arial",20)).pack(side="left")
-b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("arial",20)).pack(side="right")
+b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("arial",20)).pack(side="right", padx=20)
 label = Label(fenetre, text="Déplacez la souris", font=("Arial", 14))
 label.pack(pady=20)
+
+##Creation du bouton parametre 
+parametre = Button(fenetre, text="Setting",font=("arial", 20),command=setting )
+parametre.pack(side="right")
+
+#fonction qui ouvre une autre fenetre
+def color():
+      tabcolor=Tk()
+      tabcolor.title("COULORS")
+
+
+def setting(): 
+      global parametrefenetre
+      parametrefenetre = Toplevel(fenetre)
+      parametrefenetre.title("SETTING")
+      choixcouleur = Button(parametrefenetre, text="Color",font=("arial",20), command= color)
+      choixcouleur.pack(side="bottom", padx=20, pady=20)
+      parametrefenetre.mainloop()
+
+            
+
 
 fenetre.bind("<Motion>", show_coords)  # Détecter le mouvement de la souris
 print(l)
@@ -60,3 +85,4 @@ affichage_gagner(l)
 
 
 fenetre.mainloop() # Lancement de la boucle principale
+
