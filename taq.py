@@ -44,8 +44,25 @@ def move_check(event):
         move()
 
 def setting():
-      parametrefenetre = Tk()
+      global parametrefenetre
+      parametrefenetre = Toplevel(fenetre) #creation de la fenetre fille
       parametrefenetre.title("SETTING")
+      boutoncouleur = Button(parametrefenetre, text="Color", font=("Arial",20), command=color)
+      boutoncouleur.pack(side="bottom", padx=80, pady=80)
+
+
+
+
+def color():
+      palettecouleur = Toplevel(parametrefenetre) 
+      palettecouleur.title("PALETTE DE COULEUR")
+      bred = Button(palettecouleur, text="red")
+      bred.pack(padx=60, pady=20)
+      bblack = Button(palettecouleur, text="black")
+      bblack.pack(padx=60, pady=20)
+      bpurple = Button(palettecouleur, text="purple")
+      bpurple.pack(padx=60, pady=20)
+
 
 def creer_ondes():
     cercle = canvas2.create_oval(200, 200, 200, 200, outline=choice(["red","yellow","blue","white","grey","orange","green","violet"]), width=2)
@@ -74,7 +91,7 @@ fenetre2=Toplevel(fenetre,bg="black",highlightbackground="red")
 """fenetre2.geometry("300x200")"""
 fenetre2.attributes("-topmost", True)
 fenetre.title("TAQUIN")
-canvas = Canvas(fenetre, bg="ivory",height=HEIGHT, width=WIDTH)
+canvas = Canvas(fenetre, bg="white",height=HEIGHT, width=WIDTH)
 canvas2 = Canvas(fenetre2,bg="black", height=400, width=400)
 
 for i in range(4):
