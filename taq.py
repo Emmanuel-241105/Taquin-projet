@@ -23,16 +23,9 @@ def move():
                                         a=canvas.coords("a"+str(l[i][j]))
                                         canvas.move("a"+str(l[i][j]),j*largeur_case - a[0], i*hauteur_case - a[1])
                 s=0
-def color():
-      tabcolor=Tk()
-      tabcolor.title("COULORS")
-def setting(): 
-      global parametrefenetre
-      parametrefenetre = Toplevel(fenetre)
-      parametrefenetre.title("SETTING")
-      choixcouleur = Button(parametrefenetre, text="Color",font=("arial",20), command= color)
-      choixcouleur.pack(side="bottom", padx=20, pady=20)
-      parametrefenetre.mainloop()
+
+
+
 def move_check(event):
     global tags,s,l,play
     item = canvas.find_closest(event.x, event.y)[0]  # Trouve l'objet le plus proche
@@ -43,25 +36,34 @@ def move_check(event):
     if play!=0:
         move()
 
+#fonction qui ouvre la fenetre setting
 def setting():
       global parametrefenetre
-      parametrefenetre = Toplevel(fenetre) #creation de la fenetre fille
+      parametrefenetre = Toplevel(fenetre) 
       parametrefenetre.title("SETTING")
-      boutoncouleur = Button(parametrefenetre, text="Color", font=("Arial",20), command=color)
+      boutoncouleur = Button(parametrefenetre, text="Color", font=("Comic Sans MS",20), command=color)
       boutoncouleur.pack(side="bottom", padx=80, pady=80)
 
+#fonction pour les boutons de couleurs
+def changement_couleur(couleur):
+      canvas.config(bg= couleur)
 
-
-
+#fonction pour la fenetre palette de couleur
 def color():
       palettecouleur = Toplevel(parametrefenetre) 
       palettecouleur.title("PALETTE DE COULEUR")
-      bred = Button(palettecouleur, text="red")
-      bred.pack(padx=60, pady=20)
-      bblack = Button(palettecouleur, text="black")
+      bred = Button(palettecouleur, text="red",font=("Comic Sans MS",20), command=lambda: changement_couleur("red"))
+      bred.pack(padx=100, pady=20)
+      bblack = Button(palettecouleur, text="black",font=("Comic Sans MS",20),  command=lambda: changement_couleur("black"))
       bblack.pack(padx=60, pady=20)
-      bpurple = Button(palettecouleur, text="purple")
-      bpurple.pack(padx=60, pady=20)
+      bgreen = Button(palettecouleur, text="green",font=("Comic Sans MS",20),  command=lambda :changement_couleur("green"))
+      bgreen.pack(padx=60, pady=20)
+      bblue = Button(palettecouleur, text="blue",font=("Comic Sans MS",20),  command=lambda :changement_couleur("blue"))
+      bblue.pack(padx=60, pady=20)
+      byellow = Button(palettecouleur, text="yellow",font=("Comic Sans MS",20),  command=lambda :changement_couleur("yellow"))
+      byellow.pack(padx=60, pady=20)
+      bwhite = Button(palettecouleur, text="white",font=("Comic Sans MS",20),  command=lambda :changement_couleur("white"))
+      bwhite.pack(padx=60, pady=20)
 
 
 def creer_ondes():
@@ -99,13 +101,13 @@ for i in range(4):
         e+=1
         canvas.create_rectangle((j*largeur_case, i*hauteur_case),
                 ((j+1)*largeur_case, (i+1)*hauteur_case), fill="grey",tags="a"+str(e))
-        canvas.create_text(((j*largeur_case)+60, (i*hauteur_case)+60),text=str(e),font=("Arial", 60, "bold"),fill="black",tags="a"+str(e))
+        canvas.create_text(((j*largeur_case)+60, (i*hauteur_case)+60),text=str(e),font=("Comic Sans MS", 60, "bold"),fill="black",tags="a"+str(e))
 canvas.delete("a16")
 
-b1=Button(fenetre2,text="nouvelle partie" ,font=("arial",10),command=move)
-b4=Button(fenetre2,text="charger partie" ,font=("arial",10))
-b2=Button(fenetre,text="Help" ,font=("arial",20))
-b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("arial",20))
+b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",10),command=move)
+b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",10))
+b2=Button(fenetre,text="Help" ,font=("Comic Sans MSl",20))
+b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("Comic Sans MS",20))
 canvas.grid(row=0,column=5,rowspan=5)
 canvas2.grid(row=0,column=0,columnspan=3)
 b2.grid(row=6,column=0)
@@ -115,7 +117,7 @@ canvas2.create_window(200,250, window=b4)
 canvas.bind("<Button-1>", move_check)
 creer_ondes()
 animer()
-parametre = Button(fenetre, text="Setting",font=("arial", 20),command=setting )
+parametre = Button(fenetre, text="Setting",font=("Comic Sans MS", 20),command=setting )
 parametre.grid(row=6,column=5)
 fenetre.mainloop() 
 
