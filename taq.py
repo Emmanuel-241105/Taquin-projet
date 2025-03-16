@@ -1,5 +1,5 @@
 from tkinter import *
-
+from random import choice
 from graphisme import creation , move_possible,l_move, affichage_gagner
 
 HEIGHT = 480
@@ -10,10 +10,12 @@ tags=None
 e=0
 play=0
 s=0
+cercles=[]
 l=creation()
-def affichage():
+def move():
         global play,l,s
         if play==0 or s==1:
+                fenetre2.destroy()
                 play+=1
                 for i in range(4):
                         for j in range(4):
@@ -21,27 +23,60 @@ def affichage():
                                         a=canvas.coords("a"+str(l[i][j]))
                                         canvas.move("a"+str(l[i][j]),j*largeur_case - a[0], i*hauteur_case - a[1])
                 s=0
-        else:
-               return
+def color():
+      tabcolor=Tk()
+      tabcolor.title("COULORS")
+def setting(): 
+      global parametrefenetre
+      parametrefenetre = Toplevel(fenetre)
+      parametrefenetre.title("SETTING")
+      choixcouleur = Button(parametrefenetre, text="Color",font=("arial",20), command= color)
+      choixcouleur.pack(side="bottom", padx=20, pady=20)
+      parametrefenetre.mainloop()
 def move_check(event):
-    global tags,s,l
+    global tags,s,l,play
     item = canvas.find_closest(event.x, event.y)[0]  # Trouve l'objet le plus proche
     tag = canvas.gettags(item)# Récupère ses tags
     tags=int(tag[0][1:])
     s=move_possible(tags)[0]
     l=l_move(l,tags)
-    affichage()
+    if play!=0:
+        move()
 
 def setting():
       parametrefenetre = Tk()
       parametrefenetre.title("SETTING")
 
-def show_coords(event):
-    label.config(text=f"X: {event.x}, Y: {event.y}")
+def creer_ondes():
+    cercle = canvas2.create_oval(200, 200, 200, 200, outline=choice(["red","yellow","blue","white","grey","orange","green"]), width=2)
+    cercles.append((cercle, 0))  
+    fenetre2.after(500, creer_ondes)  
+
+def animer():
+    nouveaux_cercles = []
+    for cercle, taille in cercles:
+        taille += 5
+        x0, y0 = 200 - taille, 200 - taille
+        x1, y1 = 200 + taille, 200 + taille
+        canvas2.coords(cercle, x0, y0, x1, y1)
+        if taille < 200:
+            nouveaux_cercles.append((cercle, taille))
+        else:
+            canvas2.delete(cercle)
+    
+    cercles.clear()
+    cercles.extend(nouveaux_cercles) 
+    fenetre2.after(70, animer)  
+
 fenetre = Tk() # Création de la fenêtre racine
+fenetre.focus()
+fenetre2=Toplevel(fenetre,bg="black",highlightbackground="red")
+"""fenetre2.geometry("300x200")"""
+fenetre2.attributes("-topmost", True)
 fenetre.title("TAQUIN")
-canvas = Canvas(fenetre, bg="green", height=HEIGHT, width=WIDTH)
-canvas.pack(side="top")
+canvas = Canvas(fenetre, bg="ivory",height=HEIGHT, width=WIDTH)
+canvas2 = Canvas(fenetre2,bg="black", height=400, width=400)
+
 for i in range(4):
     for j in range(4):
         e+=1
@@ -50,39 +85,20 @@ for i in range(4):
         canvas.create_text(((j*largeur_case)+60, (i*hauteur_case)+60),text=str(e),font=("Arial", 60, "bold"),fill="black",tags="a"+str(e))
 canvas.delete("a16")
 
-b1=Button(fenetre,text="Play" ,font=("arial",20),command=affichage).pack(side="left",pady=40, padx=20)
-b2=Button(fenetre,text="Help" ,font=("arial",20)).pack(side="left")
-b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("arial",20)).pack(side="right", padx=20)
-label = Label(fenetre, text="Déplacez la souris", font=("Arial", 14))
-label.pack(pady=20)
-
-##Creation du bouton parametre 
-parametre = Button(fenetre, text="Setting",font=("arial", 20),command=setting )
-parametre.pack(side="right")
-
-#fonction qui ouvre une autre fenetre
-def color():
-      tabcolor=Tk()
-      tabcolor.title("COULORS")
-
-
-def setting(): 
-      global parametrefenetre
-      parametrefenetre = Toplevel(fenetre)
-      parametrefenetre.title("SETTING")
-      choixcouleur = Button(parametrefenetre, text="Color",font=("arial",20), command= color)
-      choixcouleur.pack(side="bottom", padx=20, pady=20)
-      parametrefenetre.mainloop()
-
-            
-
-
-fenetre.bind("<Motion>", show_coords)  # Détecter le mouvement de la souris
-print(l)
+b1=Button(fenetre2,text="nouvelle partie" ,font=("arial",10),command=move)
+b4=Button(fenetre2,text="charger partie" ,font=("arial",10))
+b2=Button(fenetre,text="Help" ,font=("arial",20))
+b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("arial",20))
+canvas.grid(row=0,column=5,rowspan=5)
+canvas2.grid(row=0,column=0,columnspan=3)
+b2.grid(row=6,column=0)
+b3.grid(row=6,column=10)
+canvas2.create_window(200,200, window=b1)
+canvas2.create_window(200,250, window=b4)
 canvas.bind("<Button-1>", move_check)
-affichage_gagner(l)
-
-
-
-fenetre.mainloop() # Lancement de la boucle principale
+creer_ondes()
+animer()
+parametre = Button(fenetre, text="Setting",font=("arial", 20),command=setting )
+parametre.grid(row=6,column=5)
+fenetre.mainloop() 
 
