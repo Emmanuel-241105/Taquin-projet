@@ -1,10 +1,2 @@
-L = [12, 23, 34, 45]
-print(L)
 
-print("Append de 56 : ")
-L.append(56)
-print(L)
 
-print("Append de 67 : ")
-L.append(67)
-print(L)

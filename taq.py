@@ -96,6 +96,16 @@ fenetre.title("TAQUIN")
 canvas = Canvas(fenetre, bg="white",height=HEIGHT, width=WIDTH)
 canvas2 = Canvas(fenetre2,bg="black", height=400, width=400)
 
+def fenetreaide():  
+    help = Toplevel(fenetre)
+    help.title("HELP")
+    texte = Label(help, text="Le jeu du Taquin est un puzzle consistant à déplacer \n"
+                             "des cases numérotées dans une grille pour réorganiser l'ordre des cases de manière\n"
+                             "à former une séquence correcte. Le but est de déplacer les pièces jusqu'à ce que \n"
+                             "l'ordre des chiffres soit rétabli, généralement de gauche à droite et de haut en bas,\n"
+                             "avec une case vide permettant de déplacer les autres pièces.", font=("Comic Sans MS", 15))
+    texte.pack(padx=10, pady=10)
+
 for i in range(4):
     for j in range(4):
         e+=1
@@ -104,9 +114,9 @@ for i in range(4):
         canvas.create_text(((j*largeur_case)+60, (i*hauteur_case)+60),text=str(e),font=("Comic Sans MS", 60, "bold"),fill="black",tags="a"+str(e))
 canvas.delete("a16")
 
-b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",10),command=move)
-b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",10))
-b2=Button(fenetre,text="Help" ,font=("Comic Sans MSl",20))
+b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",20),command=move)
+b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",20))
+b2=Button(fenetre,text="Help" ,font=("Comic Sans MS",20), command= fenetreaide)
 b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("Comic Sans MS",20))
 canvas.grid(row=0,column=5,rowspan=5)
 canvas2.grid(row=0,column=0,columnspan=3)
@@ -120,4 +130,5 @@ animer()
 parametre = Button(fenetre, text="Setting",font=("Comic Sans MS", 20),command=setting )
 parametre.grid(row=6,column=5)
 fenetre.mainloop() 
+
 
