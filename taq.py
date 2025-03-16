@@ -48,7 +48,7 @@ def setting():
       parametrefenetre.title("SETTING")
 
 def creer_ondes():
-    cercle = canvas2.create_oval(200, 200, 200, 200, outline=choice(["red","yellow","blue","white","grey","orange","green"]), width=2)
+    cercle = canvas2.create_oval(200, 200, 200, 200, outline=choice(["red","yellow","blue","white","grey","orange","green","violet"]), width=2)
     cercles.append((cercle, 0))  
     fenetre2.after(500, creer_ondes)  
 
@@ -66,7 +66,7 @@ def animer():
     
     cercles.clear()
     cercles.extend(nouveaux_cercles) 
-    fenetre2.after(70, animer)  
+    fenetre2.after(50, animer)  
 
 fenetre = Tk() # Création de la fenêtre racine
 fenetre.focus()
