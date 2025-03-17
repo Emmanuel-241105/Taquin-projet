@@ -1,41 +1,46 @@
 from tkinter import *
 from random import choice
-from graphisme import creation , move_possible,l_move
+import winsound  # Importation de winsound pour jouer un son
+from graphisme import creation, move_possible, l_move
 
 HEIGHT = 480
 WIDTH = 480
 largeur_case = WIDTH // 4
 hauteur_case = HEIGHT // 4
-tags=None
-e=0
-play=0
-s=0
-cercles=[]
-l=creation()
+tags = None
+e = 0
+play = 0
+s = 0
+cercles = []
+l = creation()
+
+def play_sound():
+    """Joue un son lorsque le joueur déplace un carré."""
+    winsound.PlaySound("move.wav", winsound.SND_ASYNC)
+
 def move():
-        global play,l,s
-        if play==0 or s==1:
-                fenetre2.destroy()
-                play=1
-                for i in range(4):
-                        for j in range(4):
-                                if l[i][j]!=0:
-                                        a=canvas.coords("a"+str(l[i][j]))
-                                        canvas.move("a"+str(l[i][j]),j*largeur_case - a[0], i*hauteur_case - a[1])
-                s=0
-
-
+    global play, l, s
+    if play == 0 or s == 1:
+        fenetre2.destroy()
+        play = 1
+        for i in range(4):
+            for j in range(4):
+                if l[i][j] != 0:
+                    a = canvas.coords("a" + str(l[i][j]))
+                    canvas.move("a" + str(l[i][j]), j * largeur_case - a[0], i * hauteur_case - a[1])
+        s = 0
 
 def move_check(event):
-    global tags,s,l,play
+    global tags, s, l, play
     item = canvas.find_closest(event.x, event.y)[0]  # Trouve l'objet le plus proche
-    tag = canvas.gettags(item)# Récupère ses tags
-    tags=int(tag[0][1:])
-    s=move_possible(tags)[0]
-    l=l_move(l,tags)
-    if play!=0:
+    tag = canvas.gettags(item)  # Récupère ses tags
+    tags = int(tag[0][1:])
+    s = move_possible(tags)[0]
+    l = l_move(l, tags)
+    if play != 0:
+        play_sound()  # Joue un son lorsque le joueur déplace un carré
         move()
-        affichage_gagner(l)    
+        affichage_gagner(l)
 def victoire():
     fenetrefin = Tk()
     fenetrefin.title("VICTORY")
@@ -109,7 +114,7 @@ fenetre2.attributes("-topmost", True)
 fenetre.title("TAQUIN")
 canvas = Canvas(fenetre, bg="white",height=HEIGHT, width=WIDTH)
 canvas2 = Canvas(fenetre2,bg="black", height=400, width=400)
-canvas2.create_text(200,100, text="Bienvenue sur Taquin", font=("Helvetica",20, "normal"), fill="white")
+canvas2.create_text(200,100, text="Taquin", font=("Helvetica", 40, "normal"), fill="white")
 
 def fenetreaide():  
     help = Toplevel(fenetre)
