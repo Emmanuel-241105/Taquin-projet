@@ -1,6 +1,7 @@
 from random import randint as ashkan
 from random import choice as balla
 from time import sleep
+import tkinter as tk
 l=[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
 def cherche(n,l):
     for i in range(4):
@@ -59,10 +60,18 @@ def l_move(l,n):
                 l[a[0]][a[1]],l[a[0]-1][a[1]]=l[a[0]-1][a[1]],l[a[0]][a[1]]
                 a=cherche(0,l)
             return l
+
+def victoire():
+    fenetrefin = tk.Tk()
+    fenetrefin.title("VICTORY")
+    labelvictoire = tk.Label(fenetrefin, text="VICTORY")
+    labelvictoire.pack(padx=10, pady=10)
+
+
 def affichage_gagner(l):
     L= [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
     if l==L:
-        print("gagnant!")
+        victoire
     else: 
         print("0")
 
