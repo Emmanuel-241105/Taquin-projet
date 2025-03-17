@@ -35,7 +35,7 @@ def move_check(event):
     l=l_move(l,tags)
     if play!=0:
         move()
-        affichage_gagner    
+        affichage_gagner(l)    
 def victoire():
     fenetrefin = Tk()
     fenetrefin.title("VICTORY")
