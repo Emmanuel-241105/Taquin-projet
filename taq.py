@@ -108,6 +108,7 @@ fenetre2.attributes("-topmost", True)
 fenetre.title("TAQUIN")
 canvas = Canvas(fenetre, bg="white",height=HEIGHT, width=WIDTH)
 canvas2 = Canvas(fenetre2,bg="black", height=400, width=400)
+canvas2.create_text(200,100, text="Taquin", font=("Helvetica", 40, "normal"), fill="white")
 
 def fenetreaide():  
     help = Toplevel(fenetre)
@@ -127,8 +128,8 @@ for i in range(4):
         canvas.create_text(((j*largeur_case)+60, (i*hauteur_case)+60),text=str(e),font=("Comic Sans MS", 60, "bold"),fill="black",tags="a"+str(e))
 canvas.delete("a16")
 
-b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",20),command=move)
-b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",20))
+b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",15),command=move)
+b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",15))
 b2=Button(fenetre,text="Help" ,font=("Comic Sans MS",20), command= fenetreaide)
 b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("Comic Sans MS",20))
 canvas.grid(row=0,column=5,rowspan=5)
