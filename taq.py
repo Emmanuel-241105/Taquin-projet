@@ -1,6 +1,6 @@
 from tkinter import *
 from random import choice
-from graphisme import creation , move_possible,l_move, affichage_gagner
+from graphisme import creation , move_possible,l_move
 
 HEIGHT = 480
 WIDTH = 480
