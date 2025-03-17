@@ -41,6 +41,7 @@ def victoire():
     fenetrefin.title("VICTORY")
     labelvictoire = Label(fenetrefin, text="VICTORY")
     labelvictoire.pack(padx=10, pady=10)
+    fenetrefin.mainloop()
 
 
 def affichage_gagner(l):
