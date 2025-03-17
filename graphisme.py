@@ -61,19 +61,6 @@ def l_move(l,n):
                 a=cherche(0,l)
             return l
 
-def victoire():
-    fenetrefin = tk.Tk()
-    fenetrefin.title("VICTORY")
-    labelvictoire = tk.Label(fenetrefin, text="VICTORY")
-    labelvictoire.pack(padx=10, pady=10)
 
 
-def affichage_gagner(l):
-    L= [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
-    if l==L:
-        victoire
-    else: 
-        print("0")
 
-print(creation())
-affichage_gagner(l)

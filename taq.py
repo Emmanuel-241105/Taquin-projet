@@ -35,6 +35,19 @@ def move_check(event):
     l=l_move(l,tags)
     if play!=0:
         move()
+        affichage_gagner    
+def victoire():
+    fenetrefin = Tk()
+    fenetrefin.title("VICTORY")
+    labelvictoire = Label(fenetrefin, text="VICTORY")
+    labelvictoire.pack(padx=10, pady=10)
+
+
+def affichage_gagner(l):
+    L= [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
+    if l==L:
+        victoire
+        fenetre.destroy()
 
 #fonction qui ouvre la fenetre setting
 def setting():
