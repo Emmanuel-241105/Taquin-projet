@@ -16,7 +16,7 @@ def move():
         global play,l,s
         if play==0 or s==1:
                 fenetre2.destroy()
-                play+=1
+                play=1
                 for i in range(4):
                         for j in range(4):
                                 if l[i][j]!=0:
