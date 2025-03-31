@@ -12,6 +12,7 @@ play=0
 s=0
 cercles=[]
 l=creation()
+tab=l
 def move():
         global play,l,s
         if play==0 or s==1:
@@ -24,7 +25,17 @@ def move():
                                         canvas.move("a"+str(l[i][j]),j*largeur_case - a[0], i*hauteur_case - a[1])
                 s=0
 
-
+# fontion restart
+def restart():
+    global l
+   
+    l=creation()
+    for i in range(4):
+        for j in range(4):
+            if l[i][j]!=0:
+                a=canvas.coords("a"+str(l[i][j]))
+                canvas.move("a"+str(l[i][j]),j*largeur_case - a[0], i*hauteur_case - a[1])
+# fonction qui verifie si le mouvement est possible
 
 def move_check(event):
     global tags,s,l,play
@@ -42,6 +53,7 @@ def victoire():
     labelvictoire = Label(fenetrefin, text="VICTORY")
     labelvictoire.pack(padx=10, pady=10)
     fenetrefin.mainloop()
+# fenetre victoire
 
 
 def affichage_gagner(l):
@@ -137,6 +149,8 @@ canvas.grid(row=0,column=5,rowspan=5)
 canvas2.grid(row=0,column=0,columnspan=3)
 b2.grid(row=6,column=0)
 b3.grid(row=6,column=10)
+b5=Button(fenetre,text="restart" ,font=("Comic Sans MS",20),command=restart)
+b5.grid(row=7,column=0)
 canvas2.create_window(200,200, window=b1)
 canvas2.create_window(200,250, window=b4)
 canvas.bind("<Button-1>", move_check)
