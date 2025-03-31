@@ -28,7 +28,6 @@ def move():
 # fontion restart
 def restart():
     global l
-   
     l=creation()
     for i in range(4):
         for j in range(4):
@@ -60,7 +59,8 @@ def affichage_gagner(l):
     L= [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
     if l==L:
         victoire
-        fenetre.destroy()
+        fenetre.destroy() #ne pas fermer la fenetre
+        
 
 #fonction qui ouvre la fenetre setting
 def setting():
