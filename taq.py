@@ -59,8 +59,9 @@ def affichage_gagner(l):
     L= [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
     if l==L:
         victoire
-        fenetre.destroy() #ne pas fermer la fenetre
-        
+       # fenetre.destroy() ne pas fermer la fenetre mais ouvrir la fenetre avec le scenario de victoire
+     
+
 
 #fonction qui ouvre la fenetre setting
 def setting():

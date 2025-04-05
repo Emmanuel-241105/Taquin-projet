@@ -26,9 +26,9 @@ def move_possible(n):
     a=cherche(0,l)
     b=cherche(n,l)
     if b[0]==a[0]:
-        return 1,1
+        return 1,1  # le premier 1 est pour le déplacement est possible et le deuxieme pour la colonne
     elif b[1]==a[1]:
-        return 1,0
+        return 1,0  # le premier 1 est pour le déplacement est possible et le zéro pour la ligne
     else:
         return 0,0
 
