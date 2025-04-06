@@ -27,6 +27,7 @@ def move():
 
 # fontion restart
 def restart():
+    score=0
     global l
     l=creation()
     for i in range(4):
