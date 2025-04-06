@@ -1,6 +1,9 @@
 from tkinter import *
 from random import choice
 from graphisme import creation , move_possible,l_move
+import math
+import random
+
 
 HEIGHT = 480
 WIDTH = 480
@@ -13,56 +16,102 @@ s=0
 cercles=[]
 l=creation()
 tab=l
-def move():
-        global play,l,s
-        if play==0 or s==1:
-                fenetre2.destroy()
-                play=1
-                for i in range(4):
-                        for j in range(4):
-                                if l[i][j]!=0:
-                                        a=canvas.coords("a"+str(l[i][j]))
-                                        canvas.move("a"+str(l[i][j]),j*largeur_case - a[0], i*hauteur_case - a[1])
-                s=0
+score=0
 
-# fontion restart
-def restart():
-    score=0
-    global l
-    l=creation()
+def move():
+    global play,l,s
+    if play==0 or s==1:
+        fenetre2.destroy()
+        play=1
+        update_graphical_board(l)
+        s=0
+
+def update_graphical_board(boardin:list[list[int]]):
+    """Actualise le tableau graphique avec les valeurs du tableau donné."""
     for i in range(4):
         for j in range(4):
-            if l[i][j]!=0:
-                a=canvas.coords("a"+str(l[i][j]))
-                canvas.move("a"+str(l[i][j]),j*largeur_case - a[0], i*hauteur_case - a[1])
-# fonction qui verifie si le mouvement est possible
+            if boardin[i][j]!=0:
+                a=canvas.coords("a"+str(boardin[i][j]))
+                canvas.move("a"+str(boardin[i][j]),j*largeur_case - a[0], i*hauteur_case - a[1])
 
+
+def restart():
+    """Redémarre le jeu en réinitialisant le tableau graphique."""
+    global score, l
+    score=0
+    score_label.config(text="nber of moves: " + str(score)) 
+    l=creation()
+    update_graphical_board(l)
+
+# fonction qui verifie si le mouvement est possible
 def move_check(event):
-    global tags,s,l,play
+    """Vérifie si le mouvement est possible en fonction de la position du clic."""
+    global tags,s,l,play,score
     item = canvas.find_closest(event.x, event.y)[0]  # Trouve l'objet le plus proche
     tag = canvas.gettags(item)# Récupère ses tags
     tags=int(tag[0][1:])
     s=move_possible(tags)[0]
-    l=l_move(l,tags)
+    l, bool_move=l_move(l,tags)
+    score = score + 1 if bool_move else score
+    score_label.config(text="nber of moves: " + str(score))  # Met à jour le label avec le nouveau score
     if play!=0:
         move()
         affichage_gagner(l)    
-def victoire():
-    fenetrefin = Tk()
-    fenetrefin.title("VICTORY")
-    labelvictoire = Label(fenetrefin, text="VICTORY")
-    labelvictoire.pack(padx=10, pady=10)
-    fenetrefin.mainloop()
-# fenetre victoire
+
+def creer_feu_artifice(canvas, x, y, couleur, rayon, nb_parts):
+    """ Crée un feu d'artifice à une position donnée avec des éclats de différentes couleurs. """
+    for _ in range(nb_parts):
+        angle = random.uniform(0, 2 * math.pi)  # Angle aléatoire
+        vitesse = random.uniform(3, 6)  # Vitesse aléatoire
+        dx = math.cos(angle) * vitesse
+        dy = math.sin(angle) * vitesse
+
+        # Création d'une petite ligne (particule du feu d'artifice)
+        canvas.create_line(x, y, x + dx * rayon, y + dy * rayon, fill=couleur, width=2)
+
+def afficher_feu_artifice(canvas, x, y):
+    """ Affiche plusieurs feux d'artifice avec des couleurs et des vitesses aléatoires. """
+    couleurs = ["red", "orange", "yellow", "green", "blue", "purple", "white"]
+    for _ in range(5):  # Nombre de feux d'artifice à afficher
+        couleur = random.choice(couleurs)
+        rayon = random.randint(10, 15)  # Rayon aléatoire pour l'éclat
+        nb_parts = random.randint(10, 20)  # Nombre de particules pour chaque feu d'artifice
+        creer_feu_artifice(canvas, x, y, couleur, rayon, nb_parts)
+
+def victoire(fenetre_principale, canvas):
+    # Ajouter le texte "Félicitations!" à la fenêtre principale
+    labelvictoire = Label(fenetre_principale, text="Félicitations!", font=("Helvetica", 24, "bold"), fg="purple")
+    labelvictoire.place(x=150, y=50)  # Placer le texte en haut au centre
+
+    # Afficher des feux d'artifice au centre de la fenêtre
+    afficher_feu_artifice(canvas, 200, 200)
+
+    # Animation de feux d'artifice en boucle
+    def animer_feu():
+        canvas.delete("all")  # Efface les éléments précédents
+        afficher_feu_artifice(canvas, 200, 200)  # Crée de nouveaux feux d'artifice
+        fenetre_principale.after(500, animer_feu)  # Répète tous les 500 ms (0.5 seconde)
+    
+    # Démarrer l'animation des feux d'artifice
+    animer_feu()
+
+# def victoire():
+#     fenetrefin = Tk()
+#     fenetrefin.title("VICTORY")
+#     labelvictoire = Label(fenetrefin, text="VICTORY")
+#     labelvictoire.pack(padx=10, pady=10)
+
+#     fenetrefin.mainloop()
+# # fenetre victoire
 
 
 def affichage_gagner(l):
     L= [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
     if l==L:
-        victoire
+        # victoire
+        victoire(fenetre, canvas)  # Appel de la fonction de victoire
        # fenetre.destroy() ne pas fermer la fenetre mais ouvrir la fenetre avec le scenario de victoire
-     
-
+   
 
 #fonction qui ouvre la fenetre setting
 def setting():
@@ -115,6 +164,24 @@ def animer():
     cercles.extend(nouveaux_cercles) 
     fenetre2.after(50, animer)  
 
+"""""
+def congratulations():
+   def animer():
+    nouveaux_cercles = []
+    for cercle, taille in cercles:
+        taille += 5
+        x0, y0 = 200 - taille, 200 - taille
+        x1, y1 = 200 + taille, 200 + taille
+        canvas2.coords(cercle, x0, y0, x1, y1)
+        if taille < 200:
+            nouveaux_cercles.append((cercle, taille))
+        else:
+            canvas2.delete(cercle)
+    
+    cercles.clear()
+    cercles.extend(nouveaux_cercles) 
+    fenetre3.after(50, animer) """
+
 fenetre = Tk() # Création de la fenêtre racine
 fenetre.focus()
 fenetre2=Toplevel(fenetre,bg="black",highlightbackground="red")
@@ -143,6 +210,8 @@ for i in range(4):
         canvas.create_text(((j*largeur_case)+60, (i*hauteur_case)+60),text=str(e),font=("Comic Sans MS", 60, "bold"),fill="black",tags="a"+str(e))
 canvas.delete("a16")
 
+score_label = Label(fenetre, text="nber of moves:"+str(score), font=("Comic Sans MS", 20), bg="white")
+score_label.grid(row=7, column=5, padx=10, pady=10)
 b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",15),command=move)
 b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",15))
 b2=Button(fenetre,text="Help" ,font=("Comic Sans MS",20), command= fenetreaide)
@@ -160,6 +229,4 @@ creer_ondes()
 animer()
 parametre = Button(fenetre, text="Setting",font=("Comic Sans MS", 20),command=setting )
 parametre.grid(row=6,column=5)
-fenetre.mainloop() 
-
-
+fenetre.mainloop() # Boucle principale de la fenêtre
