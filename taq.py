@@ -14,6 +14,7 @@ e=0
 play=0 # 1 pour le jeu en cours et 0 pour le jeu terminé 
 s=0 # 0 pour le jeu en cours et 1 pour le jeu terminé ou # s booléen pour savoir si le mouvement est possible ou pas
 cercles=[]
+historique = []
 l=creation() #
 tab=l
 score=0
@@ -71,15 +72,29 @@ def move_check(event):
     """Vérifie si le mouvement est possible en fonction de la position du clic."""
     global tags,s,l,play,score
     item = canvas.find_closest(event.x, event.y)[0]  # Trouve l'objet le plus proche
-    tag = canvas.gettags(item)# Récupère ses tags
-    tags=int(tag[0][1:])
-    s=move_possible(tags)[0]
-    l, bool_move=l_move(l,tags)
+    tag = canvas.gettags(item)  # Récupère ses tags
+    tags = int(tag[0][1:])
+    s = move_possible(tags)[0]
+
+    # Sauvegarde l'état actuel avant de faire le move
+    historique.append([row[:] for row in l])  # Copie profonde de la grille
+
+    l, bool_move = l_move(l, tags)
     score = score + 1 if bool_move else score
-    score_label.config(text="nber of moves: " + str(score))  # Met à jour le label avec le nouveau score
-    if play!=0:
+    score_label.config(text="nber of moves: " + str(score))  # Met à jour le label
+    if play != 0:
         move()
-        affichage_gagner(l)    
+        affichage_gagner(l)
+def undo_move():
+    global l, historique, score
+    if historique:
+        l = historique.pop()  # Récupère le dernier état
+        update_graphical_board(l)
+        score = max(0, score - 1)
+        score_label.config(text="nber of moves: " + str(score))
+
+
+       
 
 def creer_feu_artifice(canvas, x, y, couleur, rayon, nb_parts):
     """ Crée un feu d'artifice à une position donnée avec des éclats de différentes couleurs. """
@@ -241,6 +256,9 @@ b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",15),command=mov
 b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",15))
 b2=Button(fenetre,text="Help" ,font=("Comic Sans MS",20), command= fenetreaide)
 b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("Comic Sans MS",20))
+b_undo = Button(fenetre, text="Undo", font=("Comic Sans MS", 20), command=undo_move)
+b_undo.grid(row=6, column=1)
+
 canvas.grid(row=0,column=5,rowspan=5)
 canvas2.grid(row=0,column=0,columnspan=3)
 b3.grid(row=7,column=10)
