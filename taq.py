@@ -11,15 +11,34 @@ largeur_case = WIDTH // 4
 hauteur_case = HEIGHT // 4
 tags=None
 e=0
-play=0
-s=0
+play=0 # 1 pour le jeu en cours et 0 pour le jeu terminé 
+s=0 # 0 pour le jeu en cours et 1 pour le jeu terminé ou # s booléen pour savoir si le mouvement est possible ou pas
 cercles=[]
-l=creation()
+l=creation() #
 tab=l
 score=0
+# variables de temps
+sec=0
+min=0
+heure=0
+# fonction compteur de temps
+def timer():
+
+    """Fonction qui gère le timer."""
+    global sec, min, heure
+   
+    sec += 1
+    if sec == 60:
+        sec = 0
+        min += 1
+        if min == 60:
+            min = 0
+            heure += 1
+    time_label.config(text="Time:"f"{heure:02}:{min:02}:{sec:02}")
+    fenetre.after(1000, timer)  # Appelle la fonction toutes les secondes
 
 def move():
-    global play,l,s
+    global play,l,s#,min,sec,heure 
     if play==0 or s==1:
         fenetre2.destroy()
         play=1
@@ -37,9 +56,13 @@ def update_graphical_board(boardin:list[list[int]]):
 
 def restart():
     """Redémarre le jeu en réinitialisant le tableau graphique."""
-    global score, l
+    global score, l, min, sec, heure
     score=0
+    sec=0
+    min=0
+    heure=0
     score_label.config(text="nber of moves: " + str(score)) 
+    timer() # Démarre le timer
     l=creation()
     update_graphical_board(l)
 
@@ -211,22 +234,24 @@ for i in range(4):
 canvas.delete("a16")
 
 score_label = Label(fenetre, text="nber of moves:"+str(score), font=("Comic Sans MS", 20), bg="white")
-score_label.grid(row=7, column=5, padx=10, pady=10)
+score_label.grid(row=6, column=5, padx=10, pady=10)
+time_label= Label(fenetre, text="Time: 00:00:00", font=("Comic Sans MS", 20), bg="white")
+time_label.grid(row=6, column=10, padx=10, pady=10)
 b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",15),command=move)
 b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",15))
 b2=Button(fenetre,text="Help" ,font=("Comic Sans MS",20), command= fenetreaide)
 b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("Comic Sans MS",20))
 canvas.grid(row=0,column=5,rowspan=5)
 canvas2.grid(row=0,column=0,columnspan=3)
-b2.grid(row=6,column=0)
-b3.grid(row=6,column=10)
-b5=Button(fenetre,text="restart" ,font=("Comic Sans MS",20),command=restart)
-b5.grid(row=7,column=0)
+b3.grid(row=7,column=10)
+b5=Button(fenetre,text="restart" ,font=("Comic Sans MS",20),command=restart )
+b5.grid(row=6,column=0)
+b2.grid(row=7,column=5)
 canvas2.create_window(200,200, window=b1)
 canvas2.create_window(200,250, window=b4)
 canvas.bind("<Button-1>", move_check)
 creer_ondes()
 animer()
 parametre = Button(fenetre, text="Setting",font=("Comic Sans MS", 20),command=setting )
-parametre.grid(row=6,column=5)
+parametre.grid(row=7,column=0)
 fenetre.mainloop() # Boucle principale de la fenêtre
