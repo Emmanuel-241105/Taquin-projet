@@ -1,2 +1,5 @@
+import tkinter as tk
+from taq import victoire
 
-
+hall=tk.Tk()
+hall.mainloop()

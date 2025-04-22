@@ -15,20 +15,22 @@ def cherche(n,l):
 def creation():
     """ Création d'une matrice 4x4 avec des valeurs de 1 à 15. La dernière case est toujours 0."""
     global l
+    #target=cherche(n,l)# trouve les coordonées de l'élément n qui sera choisi de manière aléatoire
     coord_zero=cherche(0,l) # Trouve la position de 0
     l[coord_zero[0]][coord_zero[1]]=l[3][3]# on remet le 0 à la fin de la matrice
-    l[3][3]=0 # l[x][y] designe l'élément de la ligne x et de la colonne y de la matrice l
+    l[3][3]=0 # l[x][y] designe l'élément de la ligne y et de la colonne x de la matrice l
     i=0
-    e=196 # nombre de permutations
+    e=20000# nombre de permutations
     # Effectue des permutations aléatoires entre les cases de la matrice
     while i!=e:
-        a=ashkan(0,3)
-        b=ashkan(0,3)
-        c=ashkan(0,3)
-        d=ashkan(0,3)
-        if l[a][c]!=0 and l[b][d]!=0:
-            l[a][c],l[b][d]=l[b][d],l[a][c]
-            i+=1
+        n=ashkan(0,15)
+        l_move(l,n)
+        i+=1
+    """coord_zero=cherche(0,l)
+    n1=l[coord_zero[0]][3]
+    n2=l[3][coord_zero[1]]
+    l_move(l,n1)
+    l_move(l,n2)""" # je voulais remettre la case vide à la position 3,3
    # print(cherche(0,l))
     return l
 

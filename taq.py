@@ -27,14 +27,18 @@ def timer():
 
     """Fonction qui gère le timer."""
     global sec, min, heure
-   
-    sec += 1
-    if sec == 60:
-        sec = 0
-        min += 1
-        if min == 60:
+    if play==1:
+     sec += 1
+     if sec == 60:
+         sec = 0
+         min += 1
+     if min == 60:
             min = 0
             heure += 1
+    else: # Si le jeu est terminé, on ne met pas à jour le timer
+        sec=sec
+        min=min
+        heure=heure
     time_label.config(text="Time:"f"{heure:02}:{min:02}:{sec:02}")
     fenetre.after(1000, timer)  # Appelle la fonction toutes les secondes
 
@@ -63,7 +67,7 @@ def restart():
     min=0
     heure=0
     score_label.config(text="nber of moves: " + str(score)) 
-    timer() # Démarre le timer
+    #timer() # Démarre le timer
     l=creation()
     update_graphical_board(l)
 
@@ -120,14 +124,16 @@ def victoire(fenetre_principale, canvas):
     # Ajouter le texte "Félicitations!" à la fenêtre principale
     labelvictoire = Label(fenetre_principale, text="Félicitations!", font=("Helvetica", 24, "bold"), fg="purple")
     labelvictoire.place(x=150, y=50)  # Placer le texte en haut au centre
-
+    #creer_ondes()
+    #animer()
     # Afficher des feux d'artifice au centre de la fenêtre
     afficher_feu_artifice(canvas, 200, 200)
-
+    afficher_feu_artifice(canvas, 350, 350)
     # Animation de feux d'artifice en boucle
     def animer_feu():
         canvas.delete("all")  # Efface les éléments précédents
         afficher_feu_artifice(canvas, 200, 200)  # Crée de nouveaux feux d'artifice
+        afficher_feu_artifice(canvas, 350, 350)
         fenetre_principale.after(500, animer_feu)  # Répète tous les 500 ms (0.5 seconde)
     
     # Démarrer l'animation des feux d'artifice
@@ -256,8 +262,8 @@ b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",15),command=mov
 b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",15))
 b2=Button(fenetre,text="Help" ,font=("Comic Sans MS",20), command= fenetreaide)
 b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("Comic Sans MS",20))
-b_undo = Button(fenetre, text="Undo", font=("Comic Sans MS", 20), command=undo_move)
-b_undo.grid(row=6, column=1)
+"""b_undo = Button(fenetre, text="Undo", font=("Comic Sans MS", 20), command=undo_move)
+b_undo.grid(row=6, column=1)"""
 
 canvas.grid(row=0,column=5,rowspan=5)
 canvas2.grid(row=0,column=0,columnspan=3)
@@ -270,6 +276,7 @@ canvas2.create_window(200,250, window=b4)
 canvas.bind("<Button-1>", move_check)
 creer_ondes()
 animer()
+timer() # Démarre le timer
 parametre = Button(fenetre, text="Setting",font=("Comic Sans MS", 20),command=setting )
 parametre.grid(row=7,column=0)
 fenetre.mainloop() # Boucle principale de la fenêtre
