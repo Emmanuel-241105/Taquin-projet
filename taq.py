@@ -23,6 +23,16 @@ sec=0
 min=0
 heure=0
 # fonction compteur de temps
+fenetre = Tk() # Création de la fenêtre racine
+fenetre.focus()
+fenetre2=Toplevel(fenetre,bg="black",highlightbackground="red")
+"""fenetre2.geometry("300x200")"""
+fenetre2.attributes("-topmost", True)
+fenetre.title("TAQUIN")
+canvas = Canvas(fenetre, bg="white",height=HEIGHT, width=WIDTH)
+canvas2 = Canvas(fenetre2,bg="black", height=400, width=400)
+canvas2.create_text(200,100, text="Bienvenue sur Taquin", font=("Helvetica",20, "normal"), fill="white")
+#points=100000*sec_time
 def timer():
 
     """Fonction qui gère le timer."""
@@ -41,6 +51,13 @@ def timer():
         heure=heure
     time_label.config(text="Time:"f"{heure:02}:{min:02}:{sec:02}")
     fenetre.after(1000, timer)  # Appelle la fonction toutes les secondes
+   
+    """else: # Si le jeu est terminé, on ne met pas à jour le timer
+        sec=sec
+      min=min
+        heure=heure"""
+     
+    
 
 def move():
     global play,l,s#,min,sec,heure 
@@ -121,19 +138,47 @@ def afficher_feu_artifice(canvas, x, y):
         creer_feu_artifice(canvas, x, y, couleur, rayon, nb_parts)
 
 def victoire(fenetre_principale, canvas):
+    canvas.config(bg="blue")
+    
     # Ajouter le texte "Félicitations!" à la fenêtre principale
-    labelvictoire = Label(fenetre_principale, text="Félicitations!", font=("Helvetica", 24, "bold"), fg="purple")
-    labelvictoire.place(x=150, y=50)  # Placer le texte en haut au centre
+    labelvictoire = Label(canvas, text="Félicitations!", font=("Helvetica", 24, "bold"), fg="purple")
+    #canvas.create_text(20,50, text="Félicitations Johan !", font=("Helvetica",24, "bold"), fill="purple")
+    label_temps_mis=Label(fenetre_principale, text="Temps mis:"f"{heure:02}:{min:02}:{sec:02}", font=("Helvetica", 24, "bold"), fg="purple")
+    label_déplacements=Label(fenetre_principale, text="Nombre de déplacements:"+str(score), font=("Helvetica", 24, "bold"), fg="purple")
+    points=int(100000*((1/(1+score))+(1/(3600*heure+60*min+sec+1))))
+    label_points=Label(fenetre_principale,text="Nombre de points:"+str(points) ,font=("Helvetica", 24, "bold"), fg="purple")
+    labelvictoire.place(x=140, y=20)  # Placer le texte en haut au centre
+    label_temps_mis.place(x=140, y=100)
+    label_déplacements.place(x=140,y=175)
+    label_points.place(x=140,y=250)
     #creer_ondes()
     #animer()
     # Afficher des feux d'artifice au centre de la fenêtre
     afficher_feu_artifice(canvas, 200, 200)
     afficher_feu_artifice(canvas, 350, 350)
+    afficher_feu_artifice(canvas, 50, 200)
+    afficher_feu_artifice(canvas, 350, 350)
+    afficher_feu_artifice(canvas, 200, 50)
+    afficher_feu_artifice(canvas, 250, 350)
+    afficher_feu_artifice(canvas, 50, 375)
+    afficher_feu_artifice(canvas, 350, 50)
+    afficher_feu_artifice(canvas, 200, 400)
+    afficher_feu_artifice(canvas, 380, 200)
+    afficher_feu_artifice(canvas, 30, 20)
     # Animation de feux d'artifice en boucle
     def animer_feu():
         canvas.delete("all")  # Efface les éléments précédents
         afficher_feu_artifice(canvas, 200, 200)  # Crée de nouveaux feux d'artifice
         afficher_feu_artifice(canvas, 350, 350)
+        afficher_feu_artifice(canvas, 50, 200)
+        afficher_feu_artifice(canvas, 420, 420)
+        afficher_feu_artifice(canvas, 200, 50)
+        afficher_feu_artifice(canvas, 250, 350)
+        afficher_feu_artifice(canvas, 50, 375)
+        afficher_feu_artifice(canvas, 350, 50)
+        afficher_feu_artifice(canvas, 200, 400)
+        afficher_feu_artifice(canvas, 380, 200)
+        afficher_feu_artifice(canvas, 30, 20)
         fenetre_principale.after(500, animer_feu)  # Répète tous les 500 ms (0.5 seconde)
     
     # Démarrer l'animation des feux d'artifice
@@ -226,15 +271,15 @@ def congratulations():
     cercles.extend(nouveaux_cercles) 
     fenetre3.after(50, animer) """
 
-fenetre = Tk() # Création de la fenêtre racine
+"""fenetre = Tk() # Création de la fenêtre racine
 fenetre.focus()
 fenetre2=Toplevel(fenetre,bg="black",highlightbackground="red")
-"""fenetre2.geometry("300x200")"""
+#""fenetre2.geometry("300x200")""
 fenetre2.attributes("-topmost", True)
 fenetre.title("TAQUIN")
 canvas = Canvas(fenetre, bg="white",height=HEIGHT, width=WIDTH)
 canvas2 = Canvas(fenetre2,bg="black", height=400, width=400)
-canvas2.create_text(200,100, text="Bienvenue sur Taquin", font=("Helvetica",20, "normal"), fill="white")
+canvas2.create_text(200,100, text="Bienvenue sur Taquin", font=("Helvetica",20, "normal"), fill="white")"""
 
 def fenetreaide():  
     help = Toplevel(fenetre)
@@ -277,6 +322,7 @@ canvas.bind("<Button-1>", move_check)
 creer_ondes()
 animer()
 timer() # Démarre le timer
+
 parametre = Button(fenetre, text="Setting",font=("Comic Sans MS", 20),command=setting )
 parametre.grid(row=7,column=0)
 fenetre.mainloop() # Boucle principale de la fenêtre

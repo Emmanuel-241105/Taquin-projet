@@ -4,7 +4,7 @@ from time import sleep
 import tkinter as tk
 
 l=[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
-
+play=0
 def cherche(n,l): 
     """on cherche la ligne i et la colonne j de l'élément n dans la matrice l"""
     for i in range(4): # on commence par parcourir chaque ligne l'une après l'autre
@@ -14,16 +14,18 @@ def cherche(n,l):
             
 def creation():
     """ Création d'une matrice 4x4 avec des valeurs de 1 à 15. La dernière case est toujours 0."""
+    
     global l
+    
     #target=cherche(n,l)# trouve les coordonées de l'élément n qui sera choisi de manière aléatoire
     coord_zero=cherche(0,l) # Trouve la position de 0
     l[coord_zero[0]][coord_zero[1]]=l[3][3]# on remet le 0 à la fin de la matrice
     l[3][3]=0 # l[x][y] designe l'élément de la ligne y et de la colonne x de la matrice l
     i=0
-    e=20000# nombre de permutations
+    e=2# nombre de permutations
     # Effectue des permutations aléatoires entre les cases de la matrice
     while i!=e:
-        n=ashkan(0,15)
+        n=ashkan(1,15)
         l_move(l,n)
         i+=1
     """coord_zero=cherche(0,l)
