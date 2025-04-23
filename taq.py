@@ -138,10 +138,10 @@ def afficher_feu_artifice(canvas, x, y):
         creer_feu_artifice(canvas, x, y, couleur, rayon, nb_parts)
 
 def victoire(fenetre_principale, canvas):
-    canvas.config(bg="blue")
+    canvas.config(bg="cyan")
     
     # Ajouter le texte "Félicitations!" à la fenêtre principale
-    labelvictoire = Label(canvas, text="Félicitations!", font=("Helvetica", 24, "bold"), fg="purple")
+    labelvictoire = Label(canvas, text="Félicitations!", font=("Helvetica", 24, "bold"), fg="yellow",bg="red")
     #canvas.create_text(20,50, text="Félicitations Johan !", font=("Helvetica",24, "bold"), fill="purple")
     label_temps_mis=Label(fenetre_principale, text="Temps mis:"f"{heure:02}:{min:02}:{sec:02}", font=("Helvetica", 24, "bold"), fg="purple")
     label_déplacements=Label(fenetre_principale, text="Nombre de déplacements:"+str(score), font=("Helvetica", 24, "bold"), fg="purple")
