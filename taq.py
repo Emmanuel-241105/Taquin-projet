@@ -1,6 +1,8 @@
 from tkinter import *
 from random import choice
-from graphisme import creation , move_possible,l_move
+from graphisme import creation , move_possible,cherche
+from fichier import sauvegarder , lecture
+from tkinter.messagebox import *
 import math
 import random
 
@@ -11,7 +13,7 @@ largeur_case = WIDTH // 4
 hauteur_case = HEIGHT // 4
 tags=None
 e=0
-play=0 # 1 pour le jeu en cours et 0 pour le jeu terminé 
+play=0 # 1 pour le jeu en cours et 0 pour le jeu terminé et none pour pas en cours
 s=0 # 0 pour le jeu en cours et 1 pour le jeu terminé ou # s booléen pour savoir si le mouvement est possible ou pas
 cercles=[]
 historique = []
@@ -19,48 +21,86 @@ l=creation() #
 tab=l
 score=0
 # variables de temps
-sec=0
-min=0
-heure=0
+time=[0,0,0]
+def l_move(board,n): # bord c'est le tableau l et n c'est l'élément dont on veut savoir si le déplacement est possible
+    move_possible_result=move_possible(n,l)
+    zero_position=cherche(0,board)#position du zéro
+    target_position=cherche(n,board)# position de la case dont on veut déterminer si le déplacement est possible
+    
+    if zero_position!=target_position: # Si on clique sur la case 0, on ne fait rien et retourne le board sans modification.
+        
+     if move_possible_result[0]==0: # Si le mouvement n'est pas possible, retourne le board sans modification.
+        return board, False
+    
+     # Détermine si le mouvement se fait sur la même ligne ou la même colonne
+     # Calcul des déplacements
+     row_difference = int(target_position[0] - zero_position[0] ) # Différence de ligne
+     column_difference = int(target_position[1] - zero_position[1] ) # Déplacement sur les colonnes
+
+     # Déplacement horizontal (même ligne)
+     if move_possible_result[1] == 1:
+        # Déplacement vers la droite ou vers la gauche selon la différence de colonne
+        step = 1 if column_difference > 0 else -1
+        for _ in range(abs(column_difference)):
+            board[zero_position[0]][zero_position[1]], board[zero_position[0]][zero_position[1] + step] = \
+                board[zero_position[0]][zero_position[1] + step], board[zero_position[0]][zero_position[1]]
+            zero_position = cherche(0, board)  # Met à jour la position de l'élément 0 après chaque échange
+        return board, True
+    
+     # Déplacement vertical (même colonne) [move_possible_result[1] == 0]
+     else :
+        # Déplacement vers le bas ou vers le haut selon la différence de ligne
+        step = 1 if row_difference > 0 else -1
+        for _ in range(abs(row_difference)):
+            board[zero_position[0]][zero_position[1]], board[zero_position[0] + step][zero_position[1]] = \
+                board[zero_position[0] + step][zero_position[1]], board[zero_position[0]][zero_position[1]]
+            zero_position = cherche(0, board)  # Met à jour la position de l'élément 0 après chaque échange
+        return board, True
+    elif  zero_position!=target_position:
+        return board, False
+
 # fonction compteur de temps
-fenetre = Tk() # Création de la fenêtre racine
-fenetre.focus()
-fenetre2=Toplevel(fenetre,bg="black",highlightbackground="red")
-"""fenetre2.geometry("300x200")"""
-fenetre2.attributes("-topmost", True)
-fenetre.title("TAQUIN")
-canvas = Canvas(fenetre, bg="white",height=HEIGHT, width=WIDTH)
-canvas2 = Canvas(fenetre2,bg="black", height=400, width=400)
-canvas2.create_text(200,100, text="Bienvenue sur Taquin", font=("Helvetica",20, "normal"), fill="white")
-#points=100000*sec_time
 def timer():
 
     """Fonction qui gère le timer."""
-    global sec, min, heure
+    global time
+    print(play)
     if play==1:
-     sec += 1
-     if sec == 60:
-         sec = 0
-         min += 1
-     if min == 60:
-            min = 0
-            heure += 1
+        time[0] += 1
+        if time[0] == 60:
+            time[0] = 0
+            time[1] += 1
+        if time[1] == 60:
+            time[1] = 0
+            time[2] += 1
     else: # Si le jeu est terminé, on ne met pas à jour le timer
-        sec=sec
-        min=min
-        heure=heure
-    time_label.config(text="Time:"f"{heure:02}:{min:02}:{sec:02}")
+        time[0]=time[0]
+        time[1]=time[1]
+        time[2]=time[2]
+    time_label.config(text="Time:"f"{time[2]:02}:{time[1]:02}:{time[0]:02}")
     fenetre.after(1000, timer)  # Appelle la fonction toutes les secondes
-   
-    """else: # Si le jeu est terminé, on ne met pas à jour le timer
-        sec=sec
-      min=min
-        heure=heure"""
-     
-    
+def charger_game():
+    global l,time,score
+    dico=lecture("save.csv")
+    print(dico)
+    if dico!={"liste":[],"time":[],"score":[]}:
+        l=dico["liste"]
+        print(l,l[2],type(l[2]))
+        time=dico["time"]
+        score=int(dico["score"][0])
+        print(score)
+        move()
+
+    else:
+        showwarning("alerte","vous n'avez pas de sauvegarde")
+
+def save():
+    sauvegarder("save.csv",l,time,score)
+
+
 
 def move():
-    global play,l,s#,min,sec,heure 
+    global play,l,s
     if play==0 or s==1:
         fenetre2.destroy()
         play=1
@@ -69,6 +109,7 @@ def move():
 
 def update_graphical_board(boardin:list[list[int]]):
     """Actualise le tableau graphique avec les valeurs du tableau donné."""
+    print(l)
     for i in range(4):
         for j in range(4):
             if boardin[i][j]!=0:
@@ -78,11 +119,9 @@ def update_graphical_board(boardin:list[list[int]]):
 
 def restart():
     """Redémarre le jeu en réinitialisant le tableau graphique."""
-    global score, l, min, sec, heure
+    global score, l,time
     score=0
-    sec=0
-    min=0
-    heure=0
+    time=[0,0,0]
     score_label.config(text="nber of moves: " + str(score)) 
     #timer() # Démarre le timer
     l=creation()
@@ -91,11 +130,15 @@ def restart():
 # fonction qui verifie si le mouvement est possible
 def move_check(event):
     """Vérifie si le mouvement est possible en fonction de la position du clic."""
-    global tags,s,l,play,score
+    global tags,s,l,play,score 
+    print("hello",l)
     item = canvas.find_closest(event.x, event.y)[0]  # Trouve l'objet le plus proche
+    print(item)
     tag = canvas.gettags(item)  # Récupère ses tags
     tags = int(tag[0][1:])
-    s = move_possible(tags)[0]
+    print(tags)
+    s = move_possible(tags,l)[0]
+    print(s)
 
     # Sauvegarde l'état actuel avant de faire le move
     historique.append([row[:] for row in l])  # Copie profonde de la grille
@@ -143,9 +186,9 @@ def victoire(fenetre_principale, canvas):
     # Ajouter le texte "Félicitations!" à la fenêtre principale
     labelvictoire = Label(canvas, text="Félicitations!", font=("Helvetica", 24, "bold"), fg="yellow",bg="red")
     #canvas.create_text(20,50, text="Félicitations Johan !", font=("Helvetica",24, "bold"), fill="purple")
-    label_temps_mis=Label(fenetre_principale, text="Temps mis:"f"{heure:02}:{min:02}:{sec:02}", font=("Helvetica", 24, "bold"), fg="purple")
+    label_temps_mis=Label(fenetre_principale, text="Temps mis:"f"{time[2]:02}:{time[1]:02}:{time[0]:02}", font=("Helvetica", 24, "bold"), fg="purple")
     label_déplacements=Label(fenetre_principale, text="Nombre de déplacements:"+str(score), font=("Helvetica", 24, "bold"), fg="purple")
-    points=int(100000*((1/(1+score))+(1/(3600*heure+60*min+sec+1))))
+    points=int(100000*((1/(1+score))+(1/(3600*time[2]+60*time[1]+time[0]+1))))
     label_points=Label(fenetre_principale,text="Nombre de points:"+str(points) ,font=("Helvetica", 24, "bold"), fg="purple")
     labelvictoire.place(x=140, y=20)  # Placer le texte en haut au centre
     label_temps_mis.place(x=140, y=100)
@@ -184,20 +227,13 @@ def victoire(fenetre_principale, canvas):
     # Démarrer l'animation des feux d'artifice
     animer_feu()
 
-# def victoire():
-#     fenetrefin = Tk()
-#     fenetrefin.title("VICTORY")
-#     labelvictoire = Label(fenetrefin, text="VICTORY")
-#     labelvictoire.pack(padx=10, pady=10)
-
-#     fenetrefin.mainloop()
-# # fenetre victoire
-
 
 def affichage_gagner(l):
     L= [[1, 2, 3, 4],[5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
     if l==L:
         # victoire
+        play=0
+        print(play)
         victoire(fenetre, canvas)  # Appel de la fonction de victoire
        # fenetre.destroy() ne pas fermer la fenetre mais ouvrir la fenetre avec le scenario de victoire
    
@@ -271,15 +307,15 @@ def congratulations():
     cercles.extend(nouveaux_cercles) 
     fenetre3.after(50, animer) """
 
-"""fenetre = Tk() # Création de la fenêtre racine
+fenetre = Tk() # Création de la fenêtre racine
 fenetre.focus()
 fenetre2=Toplevel(fenetre,bg="black",highlightbackground="red")
-#""fenetre2.geometry("300x200")""
+"""fenetre2.geometry("300x200")"""
 fenetre2.attributes("-topmost", True)
 fenetre.title("TAQUIN")
 canvas = Canvas(fenetre, bg="white",height=HEIGHT, width=WIDTH)
 canvas2 = Canvas(fenetre2,bg="black", height=400, width=400)
-canvas2.create_text(200,100, text="Bienvenue sur Taquin", font=("Helvetica",20, "normal"), fill="white")"""
+canvas2.create_text(200,100, text="Bienvenue sur Taquin", font=("Helvetica",20, "normal"), fill="white")
 
 def fenetreaide():  
     help = Toplevel(fenetre)
@@ -304,9 +340,9 @@ score_label.grid(row=6, column=5, padx=10, pady=10)
 time_label= Label(fenetre, text="Time: 00:00:00", font=("Comic Sans MS", 20), bg="white")
 time_label.grid(row=6, column=10, padx=10, pady=10)
 b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",15),command=move)
-b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",15))
+b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",15),command=charger_game)
 b2=Button(fenetre,text="Help" ,font=("Comic Sans MS",20), command= fenetreaide)
-b3=Button(fenetre,text="Quit" ,command= fenetre.destroy ,font=("Comic Sans MS",20))
+b3=Button(fenetre,text="Save" ,command=lambda:sauvegarder("save.csv",l,time,score) ,font=("Comic Sans MS",20))
 """b_undo = Button(fenetre, text="Undo", font=("Comic Sans MS", 20), command=undo_move)
 b_undo.grid(row=6, column=1)"""
 
@@ -322,7 +358,7 @@ canvas.bind("<Button-1>", move_check)
 creer_ondes()
 animer()
 timer() # Démarre le timer
-
 parametre = Button(fenetre, text="Setting",font=("Comic Sans MS", 20),command=setting )
 parametre.grid(row=7,column=0)
 fenetre.mainloop() # Boucle principale de la fenêtre
+
