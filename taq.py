@@ -4,7 +4,8 @@ from graphisme import creation , move_possible,cherche
 from fichier import sauvegarder , lecture
 from tkinter.messagebox import *
 import math
-import random
+
+
 
 
 HEIGHT = 480
@@ -156,8 +157,6 @@ def undo_move():
         update_graphical_board(l)
         score = max(0, score - 1)
         score_label.config(text="nber of moves: " + str(score))
-
-
        
 
 def creer_feu_artifice(canvas, x, y, couleur, rayon, nb_parts):
@@ -352,7 +351,6 @@ b3.grid(row=7,column=10)
 b5=Button(fenetre,text="restart" ,font=("Comic Sans MS",20),command=restart )
 b5.grid(row=6,column=0)
 b2.grid(row=7,column=5)
-canvas2.create_window(200,200, window=b1)
 canvas2.create_window(200,250, window=b4)
 canvas.bind("<Button-1>", move_check)
 creer_ondes()
@@ -360,5 +358,116 @@ animer()
 timer() # Démarre le timer
 parametre = Button(fenetre, text="Setting",font=("Comic Sans MS", 20),command=setting )
 parametre.grid(row=7,column=0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import heapq
+from tkinter import messagebox
+
+# --- Heuristique de Manhattan ---
+def manhattan(board):
+    total = 0
+    for i in range(4):
+        for j in range(4):
+            val = board[i][j]
+            if val != 0:
+                target_x = (val - 1) // 4
+                target_y = (val - 1) % 4
+                total += abs(i - target_x) + abs(j - target_y)
+    return total
+
+# --- Génère les voisins d'un état ---
+def get_neighbors(state):
+    neighbors = []
+    i, j = next((r, c) for r in range(4) for c in range(4) if state[r][c] == 0)
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    for di, dj in directions:
+        ni, nj = i + di, j + dj
+        if 0 <= ni < 4 and 0 <= nj < 4:
+            new_state = [list(row) for row in state]
+            new_state[i][j], new_state[ni][nj] = new_state[ni][nj], new_state[i][j]
+            neighbors.append(tuple(tuple(row) for row in new_state))
+    return neighbors
+
+# --- Algorithme A* ---
+def a_star(start_state):
+    goal_state = ((1, 2, 3, 4),
+                  (5, 6, 7, 8),
+                  (9, 10, 11, 12),
+                  (13, 14, 15, 0))
+
+    open_set = []
+    heapq.heappush(open_set, (manhattan(start_state), 0, start_state, []))
+    visited = set()
+
+    while open_set:
+        _, cost, current, path = heapq.heappop(open_set)
+        if current == goal_state:
+            return path
+
+        if current in visited:
+            continue
+        visited.add(current)
+
+        for neighbor in get_neighbors(current):
+            if neighbor not in visited:
+                heapq.heappush(open_set, (
+                    cost + 1 + manhattan(neighbor),
+                    cost + 1,
+                    neighbor,
+                    path + [neighbor]
+                ))
+    return None
+
+# --- Applique la solution automatiquement ---
+def resolve_auto():
+    global l, play
+    play = 0
+    initial = tuple(tuple(row) for row in l)
+    solution = a_star(initial)
+    if not solution:
+        messagebox.showinfo("Résolution", "Pas de solution trouvée.")
+        return
+
+    def show_step(i):
+        if i < len(solution):
+            update_grid(solution[i])
+            fenetre.after(300, lambda: show_step(i + 1))
+
+    show_step(0)
+
+# --- Met à jour la grille graphique ---
+def update_grid(state):
+    global l
+    l = [list(row) for row in state]
+    affichage_plateau(canvas)
+Button(fenetre, text="Résoudre automatiquement", command=resolve_auto, font=("Helvetica", 12)).place(x=10, y=550)
+
+
 fenetre.mainloop() # Boucle principale de la fenêtre
+
+
+
+
+
+
+
+
 
