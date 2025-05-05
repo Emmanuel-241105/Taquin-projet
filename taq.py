@@ -1,11 +1,10 @@
 from tkinter import *
-#from random import randint as ask, choice as choose
-from graphisme import creation , move_possible,cherche,l_move
+#from random import *
+from graphisme import creation , move_possible,cherche
 from fichier import sauvegarder , lecture,best_score_write,best_score_read
 from tkinter.messagebox import *
 import math
 import random
-
 HEIGHT = 480
 WIDTH = 480
 largeur_case = WIDTH // 4
@@ -25,7 +24,42 @@ name=None
 def alert():
     showinfo("alerte", "Bravo!")
 
+def l_move(board,n): # bord c'est le tableau l et n c'est l'élément dont on veut savoir si le déplacement est possible
+    move_possible_result=move_possible(n,l)
+    zero_position=cherche(0,board)#position du zéro
+    target_position=cherche(n,board)# position de la case dont on veut déterminer si le déplacement est possible
+    
+    if zero_position!=target_position: # Si on clique sur la case 0, on ne fait rien et retourne le board sans modification.
+        
+     if move_possible_result[0]==0: # Si le mouvement n'est pas possible, retourne le board sans modification.
+        return board, False
+    
+     # Détermine si le mouvement se fait sur la même ligne ou la même colonne
+     # Calcul des déplacements
+     row_difference = int(target_position[0] - zero_position[0] ) # Différence de ligne
+     column_difference = int(target_position[1] - zero_position[1] ) # Déplacement sur les colonnes
 
+     # Déplacement horizontal (même ligne)
+     if move_possible_result[1] == 1:
+        # Déplacement vers la droite ou vers la gauche selon la différence de colonne
+        step = 1 if column_difference > 0 else -1
+        for _ in range(abs(column_difference)):
+            board[zero_position[0]][zero_position[1]], board[zero_position[0]][zero_position[1] + step] = \
+                board[zero_position[0]][zero_position[1] + step], board[zero_position[0]][zero_position[1]]
+            zero_position = cherche(0, board)  # Met à jour la position de l'élément 0 après chaque échange
+        return board, True
+    
+     # Déplacement vertical (même colonne) [move_possible_result[1] == 0]
+     else :
+        # Déplacement vers le bas ou vers le haut selon la différence de ligne
+        step = 1 if row_difference > 0 else -1
+        for _ in range(abs(row_difference)):
+            board[zero_position[0]][zero_position[1]], board[zero_position[0] + step][zero_position[1]] = \
+                board[zero_position[0] + step][zero_position[1]], board[zero_position[0]][zero_position[1]]
+            zero_position = cherche(0, board)  # Met à jour la position de l'élément 0 après chaque échange
+        return board, True
+    elif  zero_position!=target_position:
+        return board, False
 
 # fonction compteur de temps
 def timer():
@@ -151,7 +185,7 @@ def afficher_feu_artifice(canvas, x, y):
     for _ in range(5):  # Nombre de feux d'artifice à afficher
         couleur = random.choice(couleurs)
         rayon = random.randint(10, 15)  # Rayon aléatoire pour l'éclat
-        nb_parts =random.randint(10, 20)  # Nombre de particules pour chaque feu d'artifice
+        nb_parts = random.randint(10, 20)  # Nombre de particules pour chaque feu d'artifice
         creer_feu_artifice(canvas, x, y, couleur, rayon, nb_parts)
 def victoire(fenetre_principale, canvas):
     global name
@@ -161,7 +195,7 @@ def victoire(fenetre_principale, canvas):
     canvas.config(bg="cyan")
     
     # Ajouter le texte "Félicitations!" à la fenêtre principale
-    labelvictoire = Label(canvas, text="Félicitations  "+str(name)+" ! ", font=("Helvetica", 24, "bold"), fg="yellow",bg="red")
+    labelvictoire = Label(canvas, text="Félicitations!", font=("Helvetica", 24, "bold"), fg="yellow",bg="red")
     #canvas.create_text(20,50, text="Félicitations Johan !", font=("Helvetica",24, "bold"), fill="purple")
     label_temps_mis=Label(fenetre_principale, text="Temps mis:"f"{time[2]:02}:{time[1]:02}:{time[0]:02}", font=("Helvetica", 24, "bold"), fg="purple")
     label_déplacements=Label(fenetre_principale, text="Nombre de déplacements:"+str(score), font=("Helvetica", 24, "bold"), fg="purple")
@@ -171,18 +205,9 @@ def victoire(fenetre_principale, canvas):
     label_temps_mis.place(x=140, y=100)
     label_déplacements.place(x=140,y=175)
     label_points.place(x=140,y=250)
-    """if score>value[4]:
-        # entry=Entry(fenetre_principale,textvariable=StringVar,font=("Helvetica", 24, "bold"))
-        # lab=Label(fenetre_principale,text="entrer un nom",font=("Helvetica", 24, "bold"), fg="yellow",bg="red")
-        # lab.place(x=140,y=300)
-        # entry.place(x=140,y=330)
-        # name=entry.get()
+    if points>value[4]:
+
         best_score_write("best_score.csv",name,points)
-        def affichage(event):
-            lab.config(text=f"{key[0]}:{value[0]}\n{key[1]}:{value[1]}\n{key[2]}:{value[2]}\n{key[3]}:{value[3]}\n{key[4]}:{value[4]}\n")
-            # entry.destroy()
-        entry.bind("<Return>", affichage)"""
-   
     # Animation de feux d'artifice en boucle
     def animer_feu():
         canvas.delete("all")  # Efface les éléments précédents
@@ -267,7 +292,23 @@ def animer():
     cercles.extend(nouveaux_cercles) 
     fenetre2.after(50, animer)  
 
-
+"""""
+def congratulations():
+   def animer():
+    nouveaux_cercles = []
+    for cercle, taille in cercles:
+        taille += 5
+        x0, y0 = 200 - taille, 200 - taille
+        x1, y1 = 200 + taille, 200 + taille
+        canvas2.coords(cercle, x0, y0, x1, y1)
+        if taille < 200:
+            nouveaux_cercles.append((cercle, taille))
+        else:
+            canvas2.delete(cercle)
+    
+    cercles.clear()
+    cercles.extend(nouveaux_cercles) 
+    fenetre3.after(50, animer) """
 
 fenetre = Tk() # Création de la fenêtre racine
 fenetre.focus()
@@ -301,9 +342,11 @@ score_label = Label(fenetre, text="nber of moves:"+str(score), font=("Comic Sans
 score_label.grid(row=6, column=5, padx=10, pady=10)
 time_label= Label(fenetre, text="Time: 00:00:00", font=("Comic Sans MS", 20), bg="white")
 time_label.grid(row=6, column=10, padx=10, pady=10)
+
 b3=Button(fenetre,text="   Save   " ,command=lambda:sauvegarder("save.csv",l,time,score) ,font=("Comic Sans MS",20))
 """b_undo = Button(fenetre, text="Undo", font=("Comic Sans MS", 20), command=undo_move)
 b_undo.grid(row=6, column=1)"""
+
 canvas.grid(row=0,column=5,rowspan=5)
 canvas2.grid(row=0,column=0,columnspan=3)
 b3.grid(row=6,column=0)
@@ -311,7 +354,6 @@ canvas.bind("<Button-1>", move_check)
 creer_ondes()
 animer()
 timer() # Démarre le timer
-
 def welcome():
     b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",15),command=move)
     b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",15),command=charger_game)
@@ -344,7 +386,7 @@ menu1.add_command(label="restart", command=restart)
 menu1.add_separator()
 menu1.add_command(label="best_score", command=b_s)
 menu1.add_command(label="Quitter", command=fenetre.quit)
-menubar.add_cascade(label="menu", menu=menu1)
+menubar.add_cascade(label="setting", menu=menu1)
 menu2 = Menu(menubar, tearoff=0)
 menu2.add_command(label="A propos", command=fenetreaide)
 menubar.add_cascade(label="Aide", menu=menu2)
@@ -354,4 +396,5 @@ fenetre.config(menu=menubar)
 fenetre.mainloop()
     
    
+
 
