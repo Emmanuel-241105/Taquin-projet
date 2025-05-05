@@ -1,12 +1,9 @@
 from tkinter import *
-from random import choice
+from random import *
 from graphisme import creation , move_possible,cherche
-from fichier import sauvegarder , lecture
+from fichier import sauvegarder , lecture,best_score_write,best_score_read
 from tkinter.messagebox import *
 import math
-
-
-
 
 HEIGHT = 480
 WIDTH = 480
@@ -14,7 +11,7 @@ largeur_case = WIDTH // 4
 hauteur_case = HEIGHT // 4
 tags=None
 e=0
-play=0 # 1 pour le jeu en cours et 0 pour le jeu terminé et none pour pas en cours
+play=0 # 1 pour le jeu en cours et 0 pour le jeu terminé
 s=0 # 0 pour le jeu en cours et 1 pour le jeu terminé ou # s booléen pour savoir si le mouvement est possible ou pas
 cercles=[]
 historique = []
@@ -23,6 +20,10 @@ tab=l
 score=0
 # variables de temps
 time=[0,0,0]
+name=None
+def alert():
+    showinfo("alerte", "Bravo!")
+
 def l_move(board,n): # bord c'est le tableau l et n c'est l'élément dont on veut savoir si le déplacement est possible
     move_possible_result=move_possible(n,l)
     zero_position=cherche(0,board)#position du zéro
@@ -157,7 +158,15 @@ def undo_move():
         update_graphical_board(l)
         score = max(0, score - 1)
         score_label.config(text="nber of moves: " + str(score))
-       
+def b_s():
+    dic=best_score_read("best_score.csv")
+    value=list(dic.values())
+    key=list(dic.keys())
+    b_s = Toplevel(fenetre)
+    b_s.title("HELP")
+    texte = Label(b_s, text=f"{key[0]}:{value[0]}\n{key[1]}:{value[1]}\n{key[2]}:{value[2]}\n{key[3]}:{value[3]}\n{key[4]}:{value[4]}\n", font=("Comic Sans MS", 15))
+    texte.pack(padx=10, pady=10)
+
 
 def creer_feu_artifice(canvas, x, y, couleur, rayon, nb_parts):
     """ Crée un feu d'artifice à une position donnée avec des éclats de différentes couleurs. """
@@ -178,8 +187,11 @@ def afficher_feu_artifice(canvas, x, y):
         rayon = random.randint(10, 15)  # Rayon aléatoire pour l'éclat
         nb_parts = random.randint(10, 20)  # Nombre de particules pour chaque feu d'artifice
         creer_feu_artifice(canvas, x, y, couleur, rayon, nb_parts)
-
 def victoire(fenetre_principale, canvas):
+    global name
+    dic=best_score_read("best_score.csv")
+    value=list(dic.values())
+    key=list(dic.keys())
     canvas.config(bg="cyan")
     
     # Ajouter le texte "Félicitations!" à la fenêtre principale
@@ -193,6 +205,17 @@ def victoire(fenetre_principale, canvas):
     label_temps_mis.place(x=140, y=100)
     label_déplacements.place(x=140,y=175)
     label_points.place(x=140,y=250)
+    if score>value[4]:
+        entry=Entry(fenetre_principale,textvariable=StringVar)
+        lab=Label(fenetre_principale,text="entrer un nom",font=("Helvetica", 24, "bold"), fg="yellow",bg="red")
+        lab.place(x=140,y=300)
+        entry.place(x=140,y=330)
+        name=entry.get()
+        best_score_write("best_score.csv",name,points)
+        def affichage(event):
+            lab.config(text=f"{key[0]}:{value[0]}\n{key[1]}:{value[1]}\n{key[2]}:{value[2]}\n{key[3]}:{value[3]}\n{key[4]}:{value[4]}\n")
+            entry.destroy()
+        entry.bind("<Return>", affichage)
     #creer_ondes()
     #animer()
     # Afficher des feux d'artifice au centre de la fenêtre
@@ -247,7 +270,10 @@ def setting():
 
 #fonction pour les boutons de couleurs
 def changement_couleur(couleur):
-      canvas.config(bg= couleur)
+    canvas.config(bg= couleur)
+    parametrefenetre.destroy()
+
+
 
 #fonction pour la fenetre palette de couleur
 def color():
@@ -340,24 +366,34 @@ time_label= Label(fenetre, text="Time: 00:00:00", font=("Comic Sans MS", 20), bg
 time_label.grid(row=6, column=10, padx=10, pady=10)
 b1=Button(fenetre2,text="nouvelle partie" ,font=("Comic Sans MS",15),command=move)
 b4=Button(fenetre2,text="charger partie" ,font=("Comic Sans MS",15),command=charger_game)
-b2=Button(fenetre,text="Help" ,font=("Comic Sans MS",20), command= fenetreaide)
-b3=Button(fenetre,text="Save" ,command=lambda:sauvegarder("save.csv",l,time,score) ,font=("Comic Sans MS",20))
+b3=Button(fenetre,text="   Save   " ,command=lambda:sauvegarder("save.csv",l,time,score) ,font=("Comic Sans MS",20))
 """b_undo = Button(fenetre, text="Undo", font=("Comic Sans MS", 20), command=undo_move)
 b_undo.grid(row=6, column=1)"""
 
 canvas.grid(row=0,column=5,rowspan=5)
 canvas2.grid(row=0,column=0,columnspan=3)
-b3.grid(row=7,column=10)
-b5=Button(fenetre,text="restart" ,font=("Comic Sans MS",20),command=restart )
-b5.grid(row=6,column=0)
-b2.grid(row=7,column=5)
+b3.grid(row=6,column=0)
+canvas2.create_window(200,200, window=b1)
 canvas2.create_window(200,250, window=b4)
 canvas.bind("<Button-1>", move_check)
 creer_ondes()
 animer()
 timer() # Démarre le timer
-parametre = Button(fenetre, text="Setting",font=("Comic Sans MS", 20),command=setting )
-parametre.grid(row=7,column=0)
+
+menubar = Menu(fenetre)
+
+menu1 = Menu(menubar, tearoff=0)
+menu1.add_command(label="Bg_color", command=setting)
+menu1.add_command(label="restart", command=restart)
+menu1.add_separator()
+menu1.add_command(label="best_score", command=b_s)
+menu1.add_command(label="Quitter", command=fenetre.quit)
+menubar.add_cascade(label="setting", menu=menu1)
+menu2 = Menu(menubar, tearoff=0)
+menu2.add_command(label="A propos", command=fenetreaide)
+menubar.add_cascade(label="Aide", menu=menu2)
+
+fenetre.config(menu=menubar)
 
 fenetre.mainloop()
     

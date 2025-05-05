@@ -2,6 +2,7 @@ from random import randint as ashkan
 from random import choice as balla
 from time import sleep
 import tkinter as tk
+from taq import l_move
 
 l=[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]]
 
@@ -12,7 +13,7 @@ def cherche(n,l):
             if l[i][j]==n: # on verrifie l'élément n recherché correspond à l'élément cible par le parcourts du tableau
                 return i,j # on retourne la ligne i et la colonne j de l'élément n
             
-def creation():
+def create():
     global l
     for i in range(20000):
         n=ashkan(0,15)
@@ -39,7 +40,7 @@ def creation():
 
 
             
-def create():
+def creation():
     """ Création d'une matrice 4x4 avec des valeurs de 1 à 15. La dernière case est toujours 0."""
     global l
     i=0
@@ -94,4 +95,3 @@ def move_possible(n,tab):
     #         return l
 
 
-creation()

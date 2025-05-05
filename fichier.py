@@ -38,6 +38,8 @@ def lecture(fi:str):
     li=file.readline()
     while li!="":
         e=li.split(";")
+        print(e)
+        print(e[0])
         for i in e:
             tab.append(int(i))
         li=file.readline()
@@ -46,6 +48,43 @@ def lecture(fi:str):
     dico["time"]=tab[16:19]
     dico["score"]=tab[19:]
     return dico
+"""def best_score_read(fi):
+    dic = {}
+    with open(fi, "r") as file:
+        for line in file:
+            if ":" in line:
+                nom, val = line.strip().split(":")
+                dic[nom] = int(val)
+    return dic"""
+def best_score_read(fi):
+    dic={}
+    file=open(fi,"r")
+    li=file.readline()
+    print(li)
+    while li!="":
+        e=li.split(":")
+        print(e)
+        dic[e[0]]=int(e[1])
+        li=file.readline()
+    file.close()
+    print(dic)
+    return dic
+def best_score_write(fi,name,score):
+    d=best_score_read(fi)
+    a=list(d.values())
+    b=list(d.keys())
+    a[4]=score
+    a.sort(reverse=True)
+    e=a.index(score)
+    b.insert(e,name)
+    b.pop()
+    file=open(fi,"w")
+    for i in range(5):
+        file.write(f"{b[i]}:{str(a[i])}\n")
+    file.close()
+
+            
+
 
 
 
