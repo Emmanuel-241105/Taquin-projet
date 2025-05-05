@@ -171,7 +171,7 @@ def victoire(fenetre_principale, canvas):
     label_temps_mis.place(x=140, y=100)
     label_déplacements.place(x=140,y=175)
     label_points.place(x=140,y=250)
-    if score>value[4]:
+    """if score>value[4]:
         # entry=Entry(fenetre_principale,textvariable=StringVar,font=("Helvetica", 24, "bold"))
         # lab=Label(fenetre_principale,text="entrer un nom",font=("Helvetica", 24, "bold"), fg="yellow",bg="red")
         # lab.place(x=140,y=300)
@@ -181,7 +181,7 @@ def victoire(fenetre_principale, canvas):
         def affichage(event):
             lab.config(text=f"{key[0]}:{value[0]}\n{key[1]}:{value[1]}\n{key[2]}:{value[2]}\n{key[3]}:{value[3]}\n{key[4]}:{value[4]}\n")
             # entry.destroy()
-        entry.bind("<Return>", affichage)
+        entry.bind("<Return>", affichage)"""
    
     # Animation de feux d'artifice en boucle
     def animer_feu():
